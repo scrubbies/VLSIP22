@@ -6,21 +6,22 @@ module BCDtoDecimal (
 );
 
 reg [2999:0] result;
-integer i;
+reg [8:0] index;
 
 always @(posedge clk or posedge reset) begin
-    if (reset)
+    if (reset) begin
         result <= 3000'd0;
+        dec <= 3000'd0;
+        index <= 0;
+    end 
+    else if (index < 300) begin
+        result = (result << 3) + (result << 1);
+        result = result + bcd[(index+1)*4-1 : index*4];
+        index <= index + 1;
+    end 
     else begin
-        result <= 3000'd0; // Clear result
-        for (i = 0; i < 300; i = i + 1) begin
-            result <= (result * 10) + bcd[(i+1)*4-1 : i*4]; // Shift left and add
-        end
+        dec <= result;
     end
-end
-
-always @(posedge clk) begin
-    dec <= result;
 end
 
 endmodule
