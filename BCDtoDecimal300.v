@@ -1,7 +1,6 @@
 module BCDtoDecimal
 (
     input [1199:0] bcd,
-    input wire reset,
   output reg [2999:0] dec
 );
 
