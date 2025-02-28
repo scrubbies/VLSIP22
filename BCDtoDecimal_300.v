@@ -1,23 +1,25 @@
 module BCDtoDecimal_300 (
     input clk,
     input reset,
-    input [1199:0] bcd,
-    output reg [1199:0] dec
+    input [3:0] bcd_digit,
+    output reg [3:0] dec
 );
 
-genvar i;
+reg [8:0] index;
 
-generate
-    for (i = 0; i < 300; i = i + 1) begin : BCD_PROCESS
-        always @(posedge clk or posedge reset) begin
-            if (reset)
-                dec[(i+1)*4-1 : i*4] <= 4'd0;
-            else if (bcd[(i+1)*4-1 : i*4] <= 4'd9) 
-                dec[(i+1)*4-1 : i*4] <= bcd[(i+1)*4-1 : i*4];
-            else
-                dec[(i+1)*4-1 : i*4] <= 4'd0;
-        end
+always @(posedge clk or posedge reset) begin
+    if (reset) begin
+        dec <= 4'd0;
+        index <= 0;
+    end 
+    else if (index < 300) begin
+        if (bcd_digit <= 4'd9) 
+            dec <= bcd_digit;
+        else
+            dec <= 4'd0;
+
+        index <= index + 1;
     end
-endgenerate
+end
 
 endmodule
