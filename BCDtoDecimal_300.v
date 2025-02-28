@@ -2,24 +2,27 @@ module BCDtoDecimal_300 (
     input clk,
     input reset,
     input [3:0] bcd_digit,
-    output reg [3:0] dec
+    output reg [1199:0] dec
 );
 
+reg [1199:0] shift_reg;
 reg [8:0] index;
 
 always @(posedge clk or posedge reset) begin
     if (reset) begin
-        dec <= 4'd0;
-        index <= 0;
+        shift_reg <= 1200'd0;
+        index <= 9'd0;
     end 
     else if (index < 300) begin
         if (bcd_digit <= 4'd9) 
-            dec <= bcd_digit;
+            shift_reg <= {shift_reg[1195:0], bcd_digit};
         else
-            dec <= 4'd0;
-
+            shift_reg <= {shift_reg[1195:0], 4'd0};
+        
         index <= index + 1;
     end
 end
+
+assign dec = shift_reg;
 
 endmodule
