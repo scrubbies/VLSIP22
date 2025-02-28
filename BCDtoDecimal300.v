@@ -1,8 +1,8 @@
 module BCDtoDecimal
 (
     input [1199:0] bcd,
-    input clk
-    input reset
+    input clk,
+    input reset,
   output reg [2999:0] dec
 );
 
