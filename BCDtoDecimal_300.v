@@ -1,21 +1,23 @@
 module BCDtoDecimal_300 (
-    input clk,              // Clock for sequential processing
-    input reset,            // Reset signal
-    input [3:0] bcd_digit,  // One 4-bit BCD digit per clock cycle
-    output reg [3:0] dec    // Output one valid decimal digit at a time
+    input clk,
+    input reset,
+    input [1199:0] bcd,
+    output reg [1199:0] dec
 );
 
-always @(posedge clk or posedge reset) begin
-    if (reset) begin
-        dec <= 4'd0;     // Reset output
-    end 
-    else begin
-        // Process only one BCD digit at a time
-        if (bcd_digit <= 4'd9) 
-            dec <= bcd_digit; // Store valid BCD
-        else
-            dec <= 4'd0; // Invalid BCD → Store 0
+genvar i;
+
+generate
+    for (i = 0; i < 300; i = i + 1) begin : BCD_PROCESS
+        always @(posedge clk or posedge reset) begin
+            if (reset)
+                dec[(i+1)*4-1 : i*4] <= 4'd0;
+            else if (bcd[(i+1)*4-1 : i*4] <= 4'd9) 
+                dec[(i+1)*4-1 : i*4] <= bcd[(i+1)*4-1 : i*4];
+            else
+                dec[(i+1)*4-1 : i*4] <= 4'd0;
+        end
     end
-end
+endgenerate
 
 endmodule
