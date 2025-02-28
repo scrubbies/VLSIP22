@@ -1,4 +1,4 @@
-module BCDtoDecimal300 (
+module BCDtoDecimal_300 (
     input [1199:0] bcd,
     input wire reset,
     output reg [1199:0] dec
