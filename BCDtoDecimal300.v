@@ -1,26 +1,21 @@
-module BCDtoDecimal (
-    input clk,
-    input reset,
-    input [1199:0] bcd,
-    output reg [2999:0] dec
+module BCDtoDecimal_300 (
+    input [1199:0] bcd,  // 300 BCD digits (each digit = 4 bits)
+    input wire reset,
+    output reg [1199:0] dec // 300 decimal outputs (each 4 bits)
 );
 
-reg [2999:0] result;
-reg [8:0] index;
+integer i;
 
-always @(posedge clk or posedge reset) begin
-    if (reset) begin
-        result <= 3000'd0;
-        dec <= 3000'd0;
-        index <= 0;
-    end 
-    else if (index < 300) begin
-        result = (result << 3) + (result << 1);
-        result = result + bcd[(index+1)*4-1 : index*4];
-        index <= index + 1;
-    end 
+always @(*) begin
+    if (reset)
+        dec = 1200'd0; // Reset all outputs to zero
     else begin
-        dec <= result;
+        for (i = 0; i < 300; i = i + 1) begin
+            if (bcd[(i+1)*4-1 : i*4] <= 4'd9) // Check if valid BCD
+                dec[(i+1)*4-1 : i*4] = bcd[(i+1)*4-1 : i*4]; // Copy valid BCD
+            else
+                dec[(i+1)*4-1 : i*4] = 4'd0; // Set invalid BCD to 0
+        end
     end
 end
 
